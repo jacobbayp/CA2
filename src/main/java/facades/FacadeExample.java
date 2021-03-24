@@ -1,6 +1,8 @@
 package facades;
 
+import dtos.PersonDTO;
 import dtos.RenameMeDTO;
+import entities.Person;
 import entities.RenameMe;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -38,6 +40,42 @@ public class FacadeExample {
         return emf.createEntityManager();
     }
     
+    public List <PersonDTO> getAllPersons (){
+        
+        EntityManager em = emf.createEntityManager();
+        TypedQuery <Person> q = em.createQuery("SELECT p from Person p", Person.class);
+        List <Person> pms = q.getResultList();
+        return PersonDTO.getDtos(pms);
+    }
+    public PersonDTO create(PersonDTO rm){
+        Person rme = new Person(rm.getFirstName(), rm.getLastName(), rm.getEmail());
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(rme);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new PersonDTO(rme);
+    }
+}
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /*
     public RenameMeDTO create(RenameMeDTO rm){
         RenameMe rme = new RenameMe(rm.getDummyStr1(), rm.getDummyStr2());
         EntityManager em = emf.createEntityManager();
@@ -81,3 +119,4 @@ public class FacadeExample {
     }
 
 }
+*/
